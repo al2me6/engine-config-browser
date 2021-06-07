@@ -31,6 +31,8 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: gh-pages
+      - name: Remove old files
+        run: rm ./*
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
