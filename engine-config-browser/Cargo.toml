@@ -1,0 +1,25 @@
+[package]
+name = "engine-config-browser"
+version = "0.1.0"
+authors = ["Alvin Meng <alvin.q.meng@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+bincode = "1"
+engine-config = { path = "../engine-config" }
+itertools = "0.10"
+once_cell = "1"
+wasm-bindgen = "0.2"
+web-sys = { version = "0.3", features = ["Document", "Window", "Location"] }
+yew = "0.18"
+yew-router = "0.15"
+
+[build-dependencies]
+anyhow = "1"
+bincode = "1"
+engine-config = { path = "../engine-config" }
+fs-err = "2"
+git2 = "0.13"
+mapped-command = "0.3"
+serde = "1"
+serde_json = "1"
