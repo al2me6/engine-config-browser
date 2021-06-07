@@ -1,12 +1,8 @@
 use std::env;
-use std::ffi::OsStr;
-use std::io::{BufReader, BufWriter, Write};
 use std::path::{Path, PathBuf};
 
-use anyhow::{Context, Result};
 use engine_config::{Engine, EngineDatabase};
-use fs_err::{self as fs, File, PathExt};
-use mapped_command::{Command, ReturnNothing};
+use xshell::{cmd, mkdir_p, pushd, read_dir, read_file, write_file};
 
 struct Repo {
     path: PathBuf,
@@ -15,14 +11,11 @@ struct Repo {
 
 impl Repo {}
 
-fn main() -> Result<()> {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("cargo:rerun-if-changed=build.rs");
 
     let build_dir = env::current_dir()?.join("build");
-
-    if !build_dir.exists() {
-        fs::create_dir(&build_dir).context("failed to create build directory")?;
-    }
+    mkdir_p(&build_dir)?;
 
     let ro_repo = Repo {
         path: build_dir.join("RealismOverhaul"),
@@ -33,46 +26,30 @@ fn main() -> Result<()> {
         url: "https://github.com/al2me6/ROEngineParser".to_owned(),
     };
 
-    for repo in &[&ro_repo, &parser_repo] {
-        if !repo.path.exists() {
-            Command::new("git", ReturnNothing)
-                .with_arguments(&[
-                    OsStr::new("clone"),
-                    OsStr::new(&repo.url),
-                    repo.path.as_os_str(),
-                ])
-                .run()?;
+    for Repo { path, url } in &[&ro_repo, &parser_repo] {
+        if !path.exists() {
+            cmd!("git clone {url} {path}").run()?;
         }
-        Command::new("git", ReturnNothing)
-            .with_working_directory_override(Some(&repo.path))
-            .with_arguments(&["reset", "--hard"])
-            .run()?;
-        Command::new("git", ReturnNothing)
-            .with_working_directory_override(Some(&repo.path))
-            .with_arguments(&["pull"])
-            .run()?;
+        let _d = pushd(path)?;
+        cmd!("git reset --hard").run()?;
+        cmd!("git pull").run()?;
     }
 
-    Command::new("dotnet", ReturnNothing)
-        .with_working_directory_override(Some(&parser_repo.path.join("ROEngineParser")))
-        .with_arguments(&[
-            OsStr::new("run"),
-            ro_repo
-                .path
-                .join(Path::new("GameData/RealismOverhaul/Engine_Configs"))
-                .as_os_str(),
-            build_dir.join("json").as_os_str(),
-        ])
-        .run()?;
+    {
+        let _d = pushd(&parser_repo.path.join("ROEngineParser"))?;
+        let config_path = ro_repo
+            .path
+            .join(Path::new("GameData/RealismOverhaul/Engine_Configs"));
+        let output_path = build_dir.join("json");
+        cmd!("dotnet run {config_path} {output_path}").run()?;
+    }
 
     let mut engines = Vec::new();
-    for entry in build_dir.join("json").fs_err_read_dir()? {
-        let entry = entry?;
-        if !entry.path().is_file() || entry.file_name() == "000Template_Config.json" {
+    for cfg in read_dir(build_dir.join("json"))? {
+        if !cfg.is_file() || cfg.file_name().unwrap() == "000Template_Config.json" {
             continue;
         }
-        let reader = BufReader::new(File::open(entry.path())?);
-        let json = serde_json::from_reader::<_, Engine>(reader);
+        let json = serde_json::from_str::<Engine>(&read_file(&cfg)?);
         match json {
             Ok(engine) => {
                 engines.push(engine);
@@ -80,15 +57,12 @@ fn main() -> Result<()> {
             Err(err) => {
                 eprintln!(
                     "failed to load engine config `{}`: {}",
-                    entry.path().to_string_lossy(),
+                    cfg.to_string_lossy(),
                     err,
                 );
             }
         }
     }
-
-    let out_dir = env::var("OUT_DIR")?;
-    let mut bin = BufWriter::new(File::create(Path::new(&out_dir).join("data.bin"))?);
 
     let database = EngineDatabase {
         engines: engines
@@ -97,8 +71,11 @@ fn main() -> Result<()> {
             .collect(),
     };
 
-    bin.write_all(&bincode::serialize(&database)?)?;
-    bin.flush()?;
+    let out_dir = env::var("OUT_DIR")?;
+    write_file(
+        Path::new(&out_dir).join("data.bin"),
+        bincode::serialize(&database)?,
+    )?;
 
     Ok(())
 }
