@@ -2,7 +2,7 @@ use std::env;
 use std::path::{Path, PathBuf};
 
 use engine_config::{Engine, EngineDatabase};
-use xshell::{cmd, mkdir_p, pushd, read_dir, read_file, write_file};
+use xshell::{cmd, mkdir_p, pushd, pushenv, read_dir, read_file, write_file};
 
 struct Repo {
     path: PathBuf,
@@ -64,7 +64,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
+    let (commit, timestamp) = {
+        let _d = pushd(ro_repo.path)?;
+        let _e = pushenv("TZ", "UTC");
+        let commit = cmd!("git rev-parse HEAD").read()?;
+        let time = cmd!("git show -s --format=%cd {commit} --date=iso-local")
+            .read()?
+            .replace(" +0000", "");
+        (commit, time)
+    };
+
     let database = EngineDatabase {
+        commit,
+        timestamp,
         engines: engines
             .into_iter()
             .map(|cfg| (cfg.title.clone(), cfg))

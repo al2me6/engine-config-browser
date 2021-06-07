@@ -72,5 +72,7 @@ pub struct Engine {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct EngineDatabase {
+    pub commit: String,
+    pub timestamp: String,
     pub engines: HashMap<String, Engine>,
 }

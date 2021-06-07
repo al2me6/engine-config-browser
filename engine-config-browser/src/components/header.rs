@@ -21,7 +21,7 @@ impl Component for Header {
     fn view(&self) -> Html {
         html! {
             <div id = "header">
-                <h1>{ "Realism Overhaul Engine Config Browser" }</h1>
+                <h1>{ "RO Engine Config Browser" }</h1>
             </div>
         }
     }

@@ -36,26 +36,7 @@ impl Component for App {
 
     fn view(&self) -> Html {
         let renderer = Router::<AppRoute>::render(|switch| match switch {
-            AppRoute::Index => html! {
-                <table>
-                <tr class="table-header">
-                    <td>{ "Name" }</td>
-                    <td>{ "Engine Type"}</td>
-                    <td>{ "Manufacturer" }</td>
-                    <td>{ "Number of Configs" }</td>
-                    <td>{ "Default Config" }</td>
-                </tr>
-                { for DATABASE.engines.iter().sorted_by_key(|&(k, _)| k).map(|(name, eng)| html! {
-                    <tr>
-                        <td class ="table-header">{&name}</td>
-                        <td>{ &eng.engine_type }</td>
-                        <td>{ &eng.manufacturer }</td>
-                        <td>{ eng.engine_configs.len() }</td>
-                        <td>{ &eng.default_config }</td>
-                    </tr>
-                }) }
-                </table>
-            },
+            AppRoute::Index => Self::view_index(),
             AppRoute::Engine(engine) => html! {},
         });
 
@@ -63,9 +44,45 @@ impl Component for App {
             <>
             <Header />
             <main>
-                <Router<AppRoute> render=renderer />
+                <div id="content-container">
+                    <p>
+                        { "Viewing data from " }
+                        <a
+                            href=format!("https://github.com/KSP-RO/RealismOverhaul/commit/{}", DATABASE.commit)
+                            target="_blank"
+                        >
+                            { "commit " }
+                            { &DATABASE.commit[0..7] }
+                        </a>
+                        { format!(", dated {} UTC.", DATABASE.timestamp) }
+                    </p>
+                    <Router<AppRoute> render=renderer />
+                </div>
             </main>
             </>
+        }
+    }
+}
+
+impl App {
+    fn view_index() -> Html {
+        html! {
+            <table>
+            <tr>
+                <th>{ "Name" }</th>
+                <th>{ "Type"}</th>
+                <th>{ "Manufacturer" }</th>
+                <th>{ "Number of Configs" }</th>
+            </tr>
+            { for DATABASE.engines.iter().sorted_by_key(|&(k, _)| k).map(|(name, eng)| html! {
+                <tr>
+                    <td class ="table-header">{&name}</td>
+                    <td>{ &eng.engine_type }</td>
+                    <td>{ &eng.manufacturer }</td>
+                    <td>{ eng.engine_configs.len() }</td>
+                </tr>
+            }) }
+            </table>
         }
     }
 }
