@@ -19,7 +19,6 @@ anyhow = "1"
 bincode = "1"
 engine-config = { path = "../engine-config" }
 fs-err = "2"
-git2 = "0.13"
 mapped-command = "0.3"
 serde = "1"
 serde_json = "1"
