@@ -79,7 +79,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         timestamp,
         engines: engines
             .into_iter()
-            .map(|cfg| (cfg.title.clone(), cfg))
+            .map(|cfg| (cfg.file_name.clone(), cfg))
             .collect(),
     };
 

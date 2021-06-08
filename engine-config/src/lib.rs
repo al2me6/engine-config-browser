@@ -59,6 +59,7 @@ pub struct EngineConfig {
 #[derive(PartialEq, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase", deny_unknown_fields)]
 pub struct Engine {
+    pub file_name: String,
     pub title: String,
     pub manufacturer: String,
     pub description: Option<String>,
