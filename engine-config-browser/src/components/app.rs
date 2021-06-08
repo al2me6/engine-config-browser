@@ -1,8 +1,8 @@
-use itertools::Itertools;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
 use super::Header;
+use crate::components::{EngineList, EnginePage};
 use crate::{AppRoute, DATABASE, RO_REPO};
 
 #[derive(Clone, Copy, PartialEq, Debug)]
@@ -10,18 +10,14 @@ pub enum Msg {
     Update,
 }
 
-pub struct App {
-    link: ComponentLink<Self>,
-    router: Box<dyn Bridge<RouteAgent>>,
-}
+pub struct App {}
 
 impl Component for App {
     type Message = Msg;
     type Properties = ();
 
-    fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let router = RouteAgent::bridge(link.callback(|_| Msg::Update));
-        App { link, router }
+    fn create(_props: Self::Properties, _link: ComponentLink<Self>) -> Self {
+        App {}
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
@@ -36,8 +32,8 @@ impl Component for App {
 
     fn view(&self) -> Html {
         let renderer = Router::<AppRoute>::render(|switch| match switch {
-            AppRoute::Index => Self::view_index(),
-            AppRoute::Engine(engine) => html! {},
+            AppRoute::Index => html! { <EngineList /> },
+            AppRoute::Engine(eng) => html! { <EnginePage name=eng /> },
         });
 
         html! {
@@ -72,25 +68,17 @@ impl Component for App {
     }
 }
 
-impl App {
-    fn view_index() -> Html {
-        html! {
-            <table>
-            <tr>
-                <th>{ "Name" }</th>
-                <th>{ "Type"}</th>
-                <th>{ "Manufacturer" }</th>
-                <th>{ "Number of Configs" }</th>
-            </tr>
-            { for DATABASE.engines.iter().sorted_by_key(|&(k, _)| k).map(|(name, eng)| html! {
-                <tr>
-                    <td class ="table-header">{&name}</td>
-                    <td>{ &eng.engine_type }</td>
-                    <td>{ &eng.manufacturer }</td>
-                    <td>{ eng.engine_configs.len() }</td>
-                </tr>
-            }) }
-            </table>
-        }
-    }
-}
+// Parent Engine
+// Config
+// Tech Unlock
+// Cost
+// Mass
+// Ignitions
+// Ground Lit Only?
+// Fuel
+// Oxidizer
+// SL Thrust
+// Vac Thrust
+// SL ISP
+// Vac ISP
+// Country (might have to add this)
