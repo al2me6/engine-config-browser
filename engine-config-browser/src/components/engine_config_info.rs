@@ -60,7 +60,16 @@ impl Component for EngineConfigInfo {
                 } else {
                     bullet("Description", &config.config_description, "")
                 }}
-                { bullet("Mass", format!("{:.3}", engine.original_mass * config.mass_mult), " T") }
+                { bullet(
+                    "Mass",
+                    format!(
+                        "{:.0}",
+                        engine.original_mass
+                            * if config.mass_mult == 0.0 { 1.0 } else { config.mass_mult }
+                            * 1000_f32
+                    ),
+                    " kg"
+                )}
                 { bullet("SL Isp", format!("{:.1}", config.isp_sea_level), "s") }
                 { bullet("Vac Isp", format!("{:.1}", config.isp_vacuum), "s") }
                 { bullet("Min thrust", format!("{:.1}", config.min_thrust), " kN") }

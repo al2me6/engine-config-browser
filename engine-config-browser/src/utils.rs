@@ -1,5 +1,3 @@
-use yew::Properties;
-
 pub fn document() -> web_sys::Document {
     window().document().unwrap()
 }
