@@ -2,19 +2,24 @@ use yew::prelude::*;
 use yew_router::prelude::*;
 use yewtil::NeqAssign;
 
-use crate::utils::ConfigName;
+use super::EngineConfigInfo;
 use crate::{AppRoute, DATABASE, RO_REPO};
 
+#[derive(Clone, PartialEq, Properties)]
+pub struct EnginePageProps {
+    pub name: String,
+}
+
 pub struct EnginePage {
-    pub config: ConfigName,
+    pub props: EnginePageProps,
 }
 
 impl Component for EnginePage {
     type Message = ();
-    type Properties = ConfigName;
+    type Properties = EnginePageProps;
 
     fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        EnginePage { config: props }
+        EnginePage { props }
     }
 
     fn update(&mut self, _msg: Self::Message) -> ShouldRender {
@@ -22,11 +27,11 @@ impl Component for EnginePage {
     }
 
     fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        self.config.neq_assign(props)
+        self.props.neq_assign(props)
     }
 
     fn view(&self) -> Html {
-        let eng = &DATABASE.engines[&self.config.name];
+        let eng = &DATABASE.engines[&self.props.name];
 
         let bullet = |name: &str, value: &str| {
             html! {
@@ -70,6 +75,9 @@ impl Component for EnginePage {
                 { bullet("Type", &eng.engine_type.to_string()) }
                 { bullet("Manufacturer", &eng.manufacturer) }
             </ul>
+            { for eng.engine_configs.keys().map(|config| html!{
+                <EngineConfigInfo engine=self.props.name.clone() config=config.clone() />
+            }) }
             </>
         }
     }

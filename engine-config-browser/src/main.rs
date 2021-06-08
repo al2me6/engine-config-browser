@@ -16,11 +16,13 @@ pub mod components {
     pub mod engine_list;
     pub mod engine_page;
     pub mod header;
+    pub mod engine_config_info;
 
     pub use app::App;
     pub use engine_list::EngineList;
     pub use header::Header;
     pub use engine_page::EnginePage;
+    pub use engine_config_info::EngineConfigInfo;
 }
 
 use crate::components::App;
