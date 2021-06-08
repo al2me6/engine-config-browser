@@ -3,7 +3,7 @@ use yew::prelude::*;
 use yew_router::prelude::*;
 
 use super::Header;
-use crate::{AppRoute, DATABASE};
+use crate::{AppRoute, DATABASE, RO_REPO};
 
 #[derive(Clone, Copy, PartialEq, Debug)]
 pub enum Msg {
@@ -43,22 +43,30 @@ impl Component for App {
         html! {
             <>
             <Header />
-            <main>
-                <div id="content-container">
+            <div id="content-container">
+                <main>
                     <p>
                         { "Viewing data from " }
                         <a
-                            href=format!("https://github.com/KSP-RO/RealismOverhaul/commit/{}", DATABASE.commit)
+                            href=format!("{}/commit/{}", RO_REPO, DATABASE.commit)
                             target="_blank"
                         >
                             { "commit " }
-                            { &DATABASE.commit[0..7] }
+                            <code>
+                                { &DATABASE.commit[0..7] }  // This is fine, commit hashes are ASCII.
+                            </code>
                         </a>
                         { format!(", dated {} UTC.", DATABASE.timestamp) }
                     </p>
                     <Router<AppRoute> render=renderer />
-                </div>
-            </main>
+                    <footer>
+                        { "Engine Config Browser by Al2Me6 | " }
+                        <a href="https://github.com/al2me6/engine-config-browser" target="_blank">
+                            { "Source" }
+                        </a>
+                    </footer>
+                </main>
+            </div>
             </>
         }
     }

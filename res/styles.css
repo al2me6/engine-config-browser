@@ -20,10 +20,7 @@ body {
   margin: 0px;
   padding: 0px;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
   height: 100%;
-  max-height: 100%;
   --header-height: 5rem;
 }
 
@@ -41,19 +38,17 @@ body {
   background-color: #d8d8d8;
 }
 
-main {
+#content-container {
   box-sizing: border-box;
-  height: calc(100vh - var(--header-height));
+  max-height: calc(100vh - var(--header-height));
   width: 100%;
   overflow-y: auto;
-  padding-bottom: 4rem;
 }
 
-#content-container {
+main {
   margin: 2rem auto 0px auto;
-  padding: 0px 4rem 0px 4rem;
-  height: 100%;
-  max-width: 80rem;
+  padding: 0px 4rem 2rem 4rem;
+  max-width: 70rem;
 }
 
 table {
@@ -92,4 +87,8 @@ th:first-child,
 td:first-child {
   position: sticky;
   left: 0;
+}
+
+footer {
+  margin-top: 4rem;
 }

@@ -19,6 +19,8 @@ use crate::components::App;
 pub const DATA_BIN: &[u8] = include_bytes!(concat!(env!("OUT_DIR"), "/data.bin"));
 pub static DATABASE: Lazy<EngineDatabase> = Lazy::new(|| bincode::deserialize(DATA_BIN).unwrap());
 
+pub const RO_REPO: &str = "https://github.com/KSP-RO/RealismOverhaul";
+
 #[derive(Debug, Clone, Switch)]
 pub enum AppRoute {
     // #[to = "#{engine}/{config}"]
