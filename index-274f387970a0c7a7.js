@@ -212,7 +212,7 @@ function addBorrowedObject(obj) {
 }
 function __wbg_adapter_18(arg0, arg1, arg2) {
     try {
-        wasm._dyn_core__ops__function__FnMut___A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h5a4b1e5a5945062e(arg0, arg1, addBorrowedObject(arg2));
+        wasm._dyn_core__ops__function__FnMut___A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__haed8f4164bbf7d01(arg0, arg1, addBorrowedObject(arg2));
     } finally {
         heap[stack_pointer++] = undefined;
     }
@@ -220,7 +220,7 @@ function __wbg_adapter_18(arg0, arg1, arg2) {
 
 function __wbg_adapter_21(arg0, arg1, arg2) {
     try {
-        wasm._dyn_core__ops__function__FnMut___A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__hef98063ab5b0cf80(arg0, arg1, addBorrowedObject(arg2));
+        wasm._dyn_core__ops__function__FnMut___A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__ha8387bf839fee93a(arg0, arg1, addBorrowedObject(arg2));
     } finally {
         heap[stack_pointer++] = undefined;
     }
@@ -267,7 +267,7 @@ async function load(module, imports) {
 
 async function init(input) {
     if (typeof input === 'undefined') {
-        input = new URL('index-bfb5720191e62d01_bg.wasm', import.meta.url);
+        input = new URL('index-274f387970a0c7a7_bg.wasm', import.meta.url);
     }
     const imports = {};
     imports.wbg = {};
@@ -524,8 +524,8 @@ async function init(input) {
         var ret = makeMutClosure(arg0, arg1, 23, __wbg_adapter_18);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper534 = function(arg0, arg1, arg2) {
-        var ret = makeMutClosure(arg0, arg1, 196, __wbg_adapter_21);
+    imports.wbg.__wbindgen_closure_wrapper530 = function(arg0, arg1, arg2) {
+        var ret = makeMutClosure(arg0, arg1, 195, __wbg_adapter_21);
         return addHeapObject(ret);
     };
 
